@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>候補者絵巻 - ニンジャオーナー選挙</title>
+<meta name="description" content="ニンジャオーナー選挙の候補者と声明文の一覧。にんセレ会場で声明を上げた候補者から順に掲載しています。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@500;700;800&family=Shippori+Mincho+B1:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="candidates">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="rough-edge">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="4" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="rough-edge-strong">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="4" seed="8" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<div class="bg-image-slot" aria-hidden="true"></div>
+<div id="cyber-bg" aria-hidden="true"><canvas id="bg-canvas"></canvas></div>
+<div class="bg-vignette" aria-hidden="true"></div>
+
+<div class="site">
+
+<header>
+  <a class="brand" href="index.html"><span class="mark">忍</span>ニンジャオーナー選挙</a>
+  <nav>
+    <a href="index.html#about">概要</a>
+    <a href="index.html#schedule">日程</a>
+    <a href="index.html#join">参加方法</a>
+    <a href="candidates.html" aria-current="page">候補者</a>
+    <a href="index.html#faq">よくある質問</a>
+    <a class="nav-vote" href="vote.html">投票する</a>
+  </nav>
+</header>
+
+<main id="top">
+<section class="page-hero">
+  <h1 class="sec-kanji">候補者絵巻</h1>
+  <p class="sec-label">CANDIDATES — 候補者と声明文</p>
+  <svg class="brush-divider" viewBox="0 0 260 14" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 7 Q70 3 130 8 T256 6" stroke="#f3ecd9" stroke-width="3.4" fill="none"
+      stroke-linecap="round" opacity=".85" filter="url(#rough-edge-strong)"/>
+  </svg>
+  <p class="lead">
+    新キャラクターのオーナーを目指し、名乗りを上げた者たちの声明。<br>
+    <strong style="color:var(--shu-bright)">にんセレ会場で声明を上げた候補者から順に</strong>掲載しています。
+  </p>
+</section>
+
+<section id="candidates" style="padding-top:1rem">
+  <p class="voting-banner">── 投票受付中 ──</p>
+  <div class="cand-grid" data-cand-grid="all"></div>
+
+  <div class="cand-more">
+    <a class="btn btn-shu" data-vote-link href="https://tohyo.mad-member-tools.com/" target="_blank" rel="noopener">投票ページへ進む</a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="links">
+    <a href="index.html">トップへ戻る</a>
+    <a href="vote.html">投票ページ</a>
+    <a href="https://www.ninja-dao.com/" target="_blank" rel="noopener">NinjaDAO公式サイト</a>
+  </div>
+  <p class="credit">ニンジャオーナー選挙運営委員会</p>
+</footer>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/candidates-data.js"></script>
+<script src="js/bg.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

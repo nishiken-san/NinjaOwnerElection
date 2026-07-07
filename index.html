@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ニンジャオーナー選挙 - CryptoNinja</title>
+<meta name="description" content="NinjaDAOのCryptoNinja新キャラクターのオーナーを決める選挙サイト。立候補の声明は、にんセレ会場にて。">
+<meta property="og:title" content="ニンジャオーナー選挙 - CryptoNinja">
+<meta property="og:description" content="次のオーナーは、君だ。立候補の声明は、にんセレ会場にて。">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@500;700;800&family=Shippori+Mincho+B1:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="index">
+
+<!-- SVGフィルター定義（和紙の毛羽立った縁） -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="rough-edge">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="4" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="rough-edge-strong">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="4" seed="8" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- 背景：奥行きサイバー空間＋水流 -->
+<div class="bg-image-slot" aria-hidden="true"></div>
+<div id="cyber-bg" aria-hidden="true"><canvas id="bg-canvas"></canvas></div>
+<div class="bg-vignette" aria-hidden="true"></div>
+
+<div class="site">
+
+<header>
+  <a class="brand" href="index.html"><span class="mark">忍</span>ニンジャオーナー選挙</a>
+  <nav>
+    <a href="#about">概要</a>
+    <a href="#schedule">日程</a>
+    <a href="#join">参加方法</a>
+    <a href="candidates.html">候補者</a>
+    <a href="#faq">よくある質問</a>
+    <a class="nav-vote" href="vote.html">投票する</a>
+  </nav>
+</header>
+
+<!-- ============ HERO ============ -->
+<main id="top">
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">CRYPTONINJA OWNER ELECTION 2026</p>
+    <h1 class="hero-title">次のオーナーは、<br><span class="accent">君だ。</span></h1>
+    <p class="hero-sub">
+      CryptoNinja 新キャラクターのオーナーを、コミュニティの一票が決める。<br>
+      電脳の川面に瓦版が舞う——今年の名乗りは、にんセレの舞台で。
+    </p>
+
+    <div class="nft-card" id="tilt-card">
+      <!-- 画像ができたら↓のdivを <img src="assets/nft.png" alt="CryptoNinja 新キャラクター"> に差し替え -->
+      <div class="ph">NFT画像<br>プレースホルダー<br><small>（水属性の新キャラクター）</small></div>
+    </div>
+    <p class="nft-caption">対象NFT：CryptoNinja #0XX（キャラ名）</p>
+
+    <div class="hero-cta">
+      <a class="btn btn-shu" id="cta-run" href="#join">立候補する</a>
+      <a class="btn btn-ghost" id="cta-cand" href="#candidates">候補者を見る</a>
+      <a class="btn btn-neon" id="cta-vote" href="vote.html">投票する（CNGT）</a>
+    </div>
+  </div>
+  <div class="scroll-hint">巻物を開く</div>
+</section>
+
+<!-- ============ イベント概要：巻物 ============ -->
+<section id="about">
+  <div class="sec-head reveal">
+    <p class="sec-label">ABOUT — イベント概要</p>
+    <svg class="brush-divider" viewBox="0 0 260 14" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 8 Q40 3 80 7 T160 6 T256 8" stroke="#f3ecd9" stroke-width="3.4" fill="none"
+        stroke-linecap="round" opacity=".85" filter="url(#rough-edge-strong)"/>
+    </svg>
+  </div>
+
+  <div class="makimono reveal" id="makimono">
+    <div class="himo" aria-hidden="true"><span></span><span></span></div>
+    <div class="roller"><span class="wound"></span></div>
+    <div class="makimono-paper">
+      <div class="washi-sheet">
+        <div class="washi-content">
+          <p class="makimono-kicker">御触書</p>
+          <h3 class="makimono-title">新キャラクター オーナー選挙の儀</h3>
+          <p class="makimono-title-sub">──　定　──</p>
+          <div class="makimono-body kobun">
+            <p>一、此度、CryptoNinja<strong>新キャラクターの主（オーナー）</strong>を、皆々の入札を以て選び定むるものなり。</p>
+            <p>一、主とならんと欲する者は、年に一度の祭典<strong>「にんセレ」</strong>の場に於いて、自ら<strong>立候補の声明</strong>を上ぐべし。</p>
+            <p>一、遠方にて参陣叶わぬ者の為、Discordの専用の間に於いても候補文を受け付け候。募集の期限は、にんセレより<strong>二週間</strong>なり。</p>
+            <p>一、会場にて名乗りを上げし者より順に、本頁に候補文を掲げ載すべきこと。</p>
+            <p>一、勝敗の行方は、<strong>CNGT</strong>による入札の数を以て決すべきこと。</p>
+            <p class="kobun-close">右の条々、堅く相守るべき者也。</p>
+          </div>
+          <div class="makimono-target">
+            <div class="frame">
+              <!-- <img src="assets/nft.png" alt="対象NFT"> に差し替え -->
+              NFT画像
+            </div>
+            <div>
+              <strong style="font-size:1.05rem;letter-spacing:.15em">対象NFT</strong><br>
+              CryptoNinja #0XX「キャラ名」
+            </div>
+          </div>
+          <div class="hanko">選挙<br>運営</div>
+        </div>
+      </div>
+    </div>
+    <div class="roller"><span class="wound"></span></div>
+  </div>
+</section>
+
+<!-- ============ 大告知：立候補声明はにんセレにて ============ -->
+<section id="proclaim" style="padding-top:1rem">
+  <div class="proclaim reveal">
+    <p class="proclaim-eyebrow">今年の選挙は、ここが違う</p>
+    <h2 class="proclaim-title">立候補の声明は、<br><span>にんセレ会場</span>にて。</h2>
+    <p class="proclaim-sub">
+      リアルイベント「にんセレ」の最中——「ニンジャ紹介と立候補会」で、候補者みずから名乗りを上げる。<br>
+      同じタイミングでDiscordの専用部屋がオープンし、候補文の募集を開始（募集はにんセレから2週間）。<br>
+      会場で声明を上げた候補者から順に、このページで紹介していきます。
+    </p>
+    <div class="proclaim-cta">
+      <a class="btn btn-neon" href="#ninsele">にんセレの詳細へ</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ スケジュール ============ -->
+<section id="schedule">
+  <div class="sec-head reveal">
+    <h2 class="sec-kanji">選挙暦</h2>
+    <p class="sec-label">SCHEDULE — 選挙スケジュール</p>
+    <svg class="brush-divider" viewBox="0 0 260 14" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 7 Q60 11 120 6 T256 7" stroke="#f3ecd9" stroke-width="3.4" fill="none"
+        stroke-linecap="round" opacity=".85" filter="url(#rough-edge-strong)"/>
+    </svg>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item shu reveal">
+      <div class="tl-date">にんセレ当日（◯月◯日）</div>
+      <div class="tl-title">にんセレ開催 — 会場で立候補の声明！</div>
+      <div class="tl-desc">「ニンジャ紹介と立候補会」にて、候補者みずから名乗りを上げる。開始と同時にDiscordの専用部屋がオープンし、候補文の募集をスタート。</div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-date">にんセレから2週間（◯月◯日 23:59）</div>
+      <div class="tl-title">候補文 募集締切</div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-date">募集期間中〜締切後</div>
+      <div class="tl-title">候補者をこのページで紹介</div>
+      <div class="tl-desc">にんセレ会場で声明を上げた候補者から順に掲載します。</div>
+    </div>
+    <div class="tl-item shu reveal">
+      <div class="tl-date">◯月◯日（◯）12:00</div>
+      <div class="tl-title">投票 開始</div>
+      <div class="tl-desc">CNGTを手に、一票を投じよ。</div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-date">◯月◯日（◯）23:59</div>
+      <div class="tl-title">CNGT申請 締切</div>
+      <div class="tl-desc">投票に必要なCNGTの申請はここまで。</div>
+    </div>
+    <div class="tl-item shu reveal">
+      <div class="tl-date">◯月◯日（◯）23:59</div>
+      <div class="tl-title">投票 締切・集計</div>
+    </div>
+    <div class="tl-item shu reveal">
+      <div class="tl-date">後日発表</div>
+      <div class="tl-title">当選者 発表</div>
+      <div class="tl-desc">発表の方法・日時は追って告知します。</div>
+    </div>
+  </div>
+  <p class="tl-note reveal">※ ◯月◯日は日付確定後に差し替えてください。</p>
+</section>
+
+<!-- ============ 参加方法 ============ -->
+<section id="join">
+  <div class="sec-head reveal">
+    <h2 class="sec-kanji">参陣</h2>
+    <p class="sec-label">JOIN — 参加方法</p>
+    <svg class="brush-divider" viewBox="0 0 260 14" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 8 Q90 4 140 8 T256 6" stroke="#f3ecd9" stroke-width="3.4" fill="none"
+        stroke-linecap="round" opacity=".85" filter="url(#rough-edge-strong)"/>
+    </svg>
+  </div>
+
+  <div class="fuda-grid">
+    <div class="washi-sheet fuda reveal">
+      <div class="washi-content">
+        <div class="fuda-kanji">立候補</div>
+        <p>オーナーを目指す者は、<strong style="color:var(--shu)">にんセレ会場で立候補の声明を！</strong>　会場に来られない方も、「ニンジャ紹介と立候補会」の開始と同時にオープンするDiscord専用部屋から候補文を送れます（募集はにんセレから2週間）。NFTを持っていなくても立候補できます。</p>
+        <a class="btn btn-sumi" href="#">立候補の詳細</a>
+      </div>
+    </div>
+    <div class="washi-sheet fuda reveal">
+      <div class="washi-content">
+        <div class="fuda-kanji">投　票</div>
+        <p>コミュニティの未来を決める一票を、あなたの手で。投票にはCNGT（投票トークン）が必要です。受け取り方は投票ページをご覧ください。</p>
+        <a class="btn btn-sumi" href="vote.html">投票ページへ</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 候補者絵巻 ============ -->
+<section id="candidates">
+  <div class="sec-head reveal">
+    <h2 class="sec-kanji">候補者絵巻</h2>
+    <p class="sec-label">CANDIDATES — 候補者と声明文</p>
+    <svg class="brush-divider" viewBox="0 0 260 14" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 7 Q70 3 130 8 T256 6" stroke="#f3ecd9" stroke-width="3.4" fill="none"
+        stroke-linecap="round" opacity=".85" filter="url(#rough-edge-strong)"/>
+    </svg>
+  </div>
+  <p class="voting-banner">── 投票受付中 ──</p>
+  <p class="cand-note reveal"><strong>にんセレ会場で声明を上げた候補者から順に</strong>掲載しています。</p>
+
+  <div class="cand-grid" data-cand-grid="top"></div>
+
+  <div class="cand-more" id="cand-more">
+    <a class="btn btn-ghost" href="candidates.html">候補者をすべて見る</a>
+  </div>
+</section>
+
+<!-- ============ 投票（CNGT） ============ -->
+<section id="vote">
+  <div class="sec-head reveal">
+    <h2 class="sec-kanji">投票の儀</h2>
+    <p class="sec-label">VOTE — CNGTで一票を投じる</p>
+    <svg class="brush-divider" viewBox="0 0 260 14" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 6 Q50 10 110 6 T256 8" stroke="#f3ecd9" stroke-width="3.4" fill="none"
+        stroke-linecap="round" opacity=".85" filter="url(#rough-edge-strong)"/>
+    </svg>
+  </div>
+
+  <div class="vote-wrap reveal">
+    <div class="vote-panel">
+      <p class="vote-lead">
+        投票には <span class="cngt">CNGT</span>（投票用トークン／Polygon）を使います。<br>
+        三つの手順で、あなたの一票が届きます。
+      </p>
+      <div class="vote-steps">
+        <div class="vote-step" data-kanji="壱">
+          <h4>CNGTを申請する</h4>
+          <p>申請フォームからCNGTの受け取りを申請します。ウォレット（MetaMask等）のアドレスが必要です。申請締切に注意。</p>
+        </div>
+        <div class="vote-step" data-kanji="弐">
+          <h4>受け取りを確認する</h4>
+          <p>ウォレットをPolygonネットワークに接続し、CNGTが届いているか確認します。<a href="#faq">確認方法はこちら</a>。</p>
+        </div>
+        <div class="vote-step" data-kanji="参">
+          <h4>投票ページで一票を投じる</h4>
+          <p>「ホルダー投票くん」でウォレットを接続し、推し候補者に投票。CNGTの保有が確認されると投票できます。</p>
+        </div>
+      </div>
+      <div class="vote-cta">
+        <a class="btn btn-shu" data-vote-link href="https://tohyo.mad-member-tools.com/" target="_blank" rel="noopener">投票ページへ進む</a>
+        <span class="small">外部サイト「ホルダー投票くん」が開きます／公平性のため、終盤は各候補者の得票数が非表示になります</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ にんセレ：瓦版（号外） ============ -->
+<section id="ninsele">
+  <div class="washi-sheet kawaraban reveal">
+    <div class="washi-content kb-frame">
+      <div class="kb-header">
+        <div class="kb-masthead">瓦版</div>
+        <div class="kb-headline">
+          <span class="kb-gogai">号外</span>
+          <h3>立候補の名乗り、年に一度の祭典「にんセレ」にて執り行い候</h3>
+          <p class="kb-date">令和八年 文月吉日　ニンジャオーナー選挙運営委員会 発行</p>
+        </div>
+      </div>
+      <div class="kb-body">
+        <div class="kb-columns">
+          <p>「にんセレ（NinjaDAO Celebration）」は、NinjaDAOのメンバーやコミュニティ全体が一堂に会する年に一度の祭典なり。NinjaDAOの創立を祝い、一年の活動を報告し、未来を共に語り合う場である。</p>
+          <p>此度の選挙では、にんセレの最中に催される<strong>「ニンジャ紹介と立候補会」</strong>にて、候補者みずから立候補の声明を上げる。名乗りの瞬間を、その目で見届けられたし。</p>
+          <p>遠方の者も案ずるなかれ——立候補会の開始と同じ刻、Discordに専用の間が開き、候補文を受け付ける。募集はにんセレより二週間なり。</p>
+          <p>当日の名乗りの様子は、Discordのステージにて発表の予定なり。詳しくは追って告げ知らせ候。新たなる名乗りの数々を、皆で見届けようぞ。</p>
+        </div>
+        <div class="kb-cta">
+          <a class="btn btn-sumi" data-ninsele-link href="#" target="_blank" rel="noopener">にんセレ詳細はこちら</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ：瓦版 ============ -->
+<section id="faq">
+  <div class="washi-sheet kawaraban reveal">
+    <div class="washi-content kb-frame">
+      <div class="kb-header">
+        <div class="kb-masthead">問答帖</div>
+        <div class="kb-headline">
+          <span class="kb-gogai">よくある質問</span>
+          <h3>選挙にまつわる疑問、ここに答え候</h3>
+        </div>
+      </div>
+      <div class="kb-body">
+        <details class="faq-item">
+          <summary>NinjaDAOに関するNFTを持っていなくても立候補はできますか？</summary>
+          <div class="faq-answer">はい！立候補は誰でも大歓迎です。NinjaDAOのDiscordに参加して、まずは「#立候補者部屋」を覗いてみてください。</div>
+        </details>
+        <details class="faq-item">
+          <summary>にんセレに行けなくても立候補できますか？</summary>
+          <div class="faq-answer">できます。にんセレで「ニンジャ紹介と立候補会」が始まるのと同時に、Discordに候補文を送るための専用部屋がオープンします。募集期間はにんセレから2週間です。なお、このページの候補者一覧は、にんセレ会場で声明を上げた方から順に掲載されます。</div>
+        </details>
+        <details class="faq-item">
+          <summary>イベント会場に行けなくても楽しめますか？</summary>
+          <div class="faq-answer">はい！にんセレ当日の発表の様子は、Discordのステージにてお届けする予定です（詳細は追って告知します）。立候補はDiscordの専用部屋から、投票はオンラインでどこからでも参加できます。</div>
+        </details>
+        <details class="faq-item">
+          <summary>投票は誰でもできますか？</summary>
+          <div class="faq-answer">投票は誰でも大歓迎ですが、CNGTが必要になります。<a href="vote.html">投票ページ</a>にある手順に沿って、CNGTを受け取るための申請フォームから申請してください。</div>
+        </details>
+        <details class="faq-item">
+          <summary>にんセレとは？</summary>
+          <div class="faq-answer">「にんセレ」とは「NinjaDAOセレブレーション」の略で、NinjaDAOのメンバーが一堂に会し、活動の成果を祝い、交流を深めるための大規模なオフラインイベントです。</div>
+        </details>
+        <details class="faq-item">
+          <summary>投票数が途中で見えなくなるって本当ですか？</summary>
+          <div class="faq-answer">はい。公平な選挙を実現するため、投票期間の終盤から投票終了までは各候補者の得票数が非表示になります。純粋に候補者の魅力で投票していただける環境を作るための仕組みです。得票数は結果発表時に公開されます。</div>
+        </details>
+        <details class="faq-item">
+          <summary>CNGTを受け取れたか確認したいです</summary>
+          <div class="faq-answer">MetaMaskなどのウォレットでPolygonネットワークに接続すると確認できます。CNGTのトークンをウォレットにインポートすると残高が表示されます。</div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="footer-share">
+    <a class="btn btn-neon" href="https://twitter.com/intent/tweet?text=%E3%83%8B%E3%83%B3%E3%82%B8%E3%83%A3%E3%82%AA%E3%83%BC%E3%83%8A%E3%83%BC%E9%81%B8%E6%8C%99%20-%20CryptoNinja" target="_blank" rel="noopener">Xでシェアする</a>
+  </div>
+  <div class="links">
+    <a href="https://www.ninja-dao.com/" target="_blank" rel="noopener">NinjaDAO公式サイト</a>
+    <a href="candidates.html">候補者一覧</a>
+    <a href="vote.html">投票ページ</a>
+    <a href="#top">ページ上部へ</a>
+  </div>
+  <p class="credit">ニンジャオーナー選挙運営委員会</p>
+</footer>
+
+</div><!-- /.site -->
+
+<script src="js/config.js"></script>
+<script src="js/candidates-data.js"></script>
+<script src="js/bg.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

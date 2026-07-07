@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>投票の儀 - ニンジャオーナー選挙</title>
+<meta name="description" content="ニンジャオーナー選挙の投票ページ。CNGTを使って「ホルダー投票くん」から一票を投じます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@500;700;800&family=Shippori+Mincho+B1:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="vote">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="rough-edge">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="4" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="rough-edge-strong">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="4" seed="8" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<div class="bg-image-slot" aria-hidden="true"></div>
+<div id="cyber-bg" aria-hidden="true"><canvas id="bg-canvas"></canvas></div>
+<div class="bg-vignette" aria-hidden="true"></div>
+
+<div class="site">
+
+<header>
+  <a class="brand" href="index.html"><span class="mark">忍</span>ニンジャオーナー選挙</a>
+  <nav>
+    <a href="index.html#about">概要</a>
+    <a href="index.html#schedule">日程</a>
+    <a href="index.html#join">参加方法</a>
+    <a href="candidates.html">候補者</a>
+    <a href="index.html#faq">よくある質問</a>
+    <a class="nav-vote" href="vote.html" aria-current="page">投票する</a>
+  </nav>
+</header>
+
+<main id="top">
+<section class="page-hero">
+  <h1 class="sec-kanji">投票の儀</h1>
+  <p class="sec-label">VOTE — CNGTで一票を投じる</p>
+  <svg class="brush-divider" viewBox="0 0 260 14" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 6 Q50 10 110 6 T256 8" stroke="#f3ecd9" stroke-width="3.4" fill="none"
+      stroke-linecap="round" opacity=".85" filter="url(#rough-edge-strong)"/>
+  </svg>
+  <p class="lead">コミュニティの未来を決める一票を、あなたの手で。</p>
+</section>
+
+<section style="padding-top:1rem">
+  <div class="vote-wrap reveal">
+    <div class="vote-panel">
+      <p class="vote-lead">
+        投票には <span class="cngt">CNGT</span>（投票用トークン／Polygon）を使います。<br>
+        三つの手順で、あなたの一票が届きます。
+      </p>
+      <div class="vote-steps">
+        <div class="vote-step" data-kanji="壱">
+          <h4>CNGTを申請する</h4>
+          <p><a data-cngt-link href="#" target="_blank" rel="noopener">申請フォーム</a>からCNGTの受け取りを申請します。ウォレット（MetaMask等）のアドレスが必要です。申請締切に注意。</p>
+        </div>
+        <div class="vote-step" data-kanji="弐">
+          <h4>受け取りを確認する</h4>
+          <p>ウォレットをPolygonネットワークに接続し、CNGTが届いているか確認します。CNGTのトークンをインポートすると残高が表示されます。</p>
+        </div>
+        <div class="vote-step" data-kanji="参">
+          <h4>投票ページで一票を投じる</h4>
+          <p>「ホルダー投票くん」でウォレットを接続し、推し候補者に投票。CNGTの保有が確認されると投票できます。</p>
+        </div>
+      </div>
+      <div class="vote-cta">
+        <!-- 仮リンク：本番はconfig.jsのvoteUrlを本番投票URLに差し替え -->
+        <a class="btn btn-shu" data-vote-link href="https://tohyo.mad-member-tools.com/" target="_blank" rel="noopener">投票ページへ進む</a>
+        <span class="small">外部サイト「ホルダー投票くん」が開きます／公平性のため、終盤は各候補者の得票数が非表示になります</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cand-more" style="margin-top:3.4rem">
+    <a class="btn btn-ghost" href="candidates.html">候補者の声明を読む</a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="links">
+    <a href="index.html">トップへ戻る</a>
+    <a href="candidates.html">候補者一覧</a>
+    <a href="https://www.ninja-dao.com/" target="_blank" rel="noopener">NinjaDAO公式サイト</a>
+  </div>
+  <p class="credit">ニンジャオーナー選挙運営委員会</p>
+</footer>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/candidates-data.js"></script>
+<script src="js/bg.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
