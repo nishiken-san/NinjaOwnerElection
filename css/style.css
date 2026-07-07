@@ -137,11 +137,11 @@ h1 .accent{
   display:inline-block;
 }
 .btn:active{transform:translateY(1px)}
-.btn-shu{
-  background:linear-gradient(160deg,var(--shu-bright),var(--shu));color:var(--washi);
-  box-shadow:0 0 26px rgba(228,71,46,.35),0 8px 20px rgba(0,0,0,.5);
+.btn-shu{ /* 主役ボタン：水属性の水色グラデーション */
+  background:linear-gradient(160deg,#5ce0ea,#2a86c8);color:#06222e;font-weight:800;
+  box-shadow:0 0 26px rgba(80,205,235,.4),0 8px 20px rgba(0,0,0,.5);
 }
-.btn-shu:hover{box-shadow:0 0 40px rgba(228,71,46,.55),0 8px 20px rgba(0,0,0,.5);transform:translateY(-2px)}
+.btn-shu:hover{box-shadow:0 0 44px rgba(90,220,240,.65),0 8px 20px rgba(0,0,0,.5);transform:translateY(-2px)}
 .btn-ghost{
   border:1px solid rgba(243,236,217,.4);color:var(--washi);
   background:rgba(243,236,217,.04);
