@@ -1,7 +1,11 @@
 /* ============================================================
- * 背景：奥行きのあるサイバー空間 × ダイナミックな水流 × 墨煙
- *  - WSPEED : 全体の動きの速さ（0.5〜0.75推奨。現在0.6）
- *  - 水しぶき（岩に当たって上がるスプレー）付き
+ * 背景：奥行きのあるサイバー空間 × 全画面の激流 × 墨煙
+ *
+ *  設計方針：
+ *   - 地平線から下の「床」一面が激流（画面全体を使う）
+ *   - 岩・水しぶきは画面の左右端寄りに配置し、中央のコンテンツ
+ *     （文字・看板）と被らないようにする
+ *   - WSPEED : 全体の動きの速さ（0.5〜0.75推奨。現在0.6）
  * ============================================================ */
 (function () {
   const WSPEED = 0.6; // ★ 動きの速さ（0.5=ゆったり 〜 0.75=やや速め）
@@ -72,34 +76,65 @@
   }
   for (let i = 0; i < CLOUD_N; i++) clouds.push(spawnCloud(true));
 
-  /* ---------- 水流：流れの筋・波紋・煌めき・岩・水しぶき ---------- */
+  /* ---------- 激流のパーツ ---------- */
+  // 流れの筋（画面幅いっぱい。off:-1..1 が画面全幅に対応）
   const streaks = [];
-  for (let i = 0; i < 36; i++) {
+  for (let i = 0; i < 52; i++) {
     streaks.push({
       p: Math.random(),
-      off: (Math.random() - .5) * 1.6,
-      speed: (.0018 + Math.random() * .003),
+      off: (Math.random() - .5) * 2,
+      speed: .003 + Math.random() * .0042, // 激流なので速め
+      w: .8 + Math.random() * 1.6,
     });
   }
+  // 煌めき
   const glints = [];
-  for (let i = 0; i < 40; i++) {
-    glints.push({ p: .15 + Math.random() * .85, off: (Math.random() - .5) * 1.6, tw: Math.random() * Math.PI * 2 });
+  for (let i = 0; i < 46; i++) {
+    glints.push({ p: .12 + Math.random() * .88, off: (Math.random() - .5) * 2, tw: Math.random() * Math.PI * 2 });
   }
   const ripples = [];
 
-  // 岩（水しぶきの発生源）：p=奥行き(0..1)、off=川幅内の位置(-1..1)
+  // 岩：画面の左右端寄りに配置（中央のコンテンツと被らせない）
+  //  off はほぼ ±.55〜.9（中央は小さい岩1つだけ、しぶき控えめ）
   const ROCKS = [
-    { p: .48, off: -.38, seed: 1.3 },
-    { p: .66, off: .42, seed: 4.1 },
-    { p: .85, off: -.08, seed: 2.6 },
+    { p: .50, off: -.80, seed: 1.3, splash: 1.0 },
+    { p: .58, off: .84, seed: 4.1, splash: 1.0 },
+    { p: .74, off: -.66, seed: 2.6, splash: 1.2 },
+    { p: .86, off: .72, seed: 5.8, splash: 1.3 },
+    { p: .95, off: -.88, seed: 3.3, splash: 1.5 },
+    { p: .42, off: .10, seed: 7.2, splash: .25 }, // 中央奥：小さく・しぶき最小
   ];
-  const drops = []; // 水しぶきの粒
-  const MAX_DROPS = 150;
+  const drops = [];
+  const MAX_DROPS = 240;
+
+  // 川霧（画面下部の両端から立ちのぼる霧）
+  const mists = [];
+  for (let i = 0; i < 9; i++) {
+    mists.push({
+      side: Math.random() > .5 ? 1 : -1,
+      x: Math.random(), y: Math.random(),
+      r: 60 + Math.random() * 130,
+      sp: .0006 + Math.random() * .001,
+      ph: Math.random() * Math.PI * 2,
+    });
+  }
+
+  // 風に舞う飛沫（画面全体をゆっくり横切る細い糸）
+  const spray = [];
+  for (let i = 0; i < 16; i++) {
+    spray.push({
+      x: Math.random(), y: Math.random() * .8,
+      vx: .0008 + Math.random() * .0014,
+      vy: .0002 + Math.random() * .0005,
+      len: 20 + Math.random() * 46,
+      a: .03 + Math.random() * .07,
+    });
+  }
 
   let t = 0;
   function draw() {
     t += .016;
-    const wt = t * WSPEED; // 水の時間（減速済み）
+    const wt = t * WSPEED;
     mouseX += (targetMX - mouseX) * .04;
     mouseY += (targetMY - mouseY) * .04;
     ctx.clearRect(0, 0, W, H);
@@ -112,9 +147,15 @@
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, W, H);
 
-    /* パースの効いた床グリッド */
     const horizonY = H * .62 + mouseY * 30 - Math.min(scrollY * .03, 40);
     const vpX = W / 2 + mouseX * 60;
+
+    /* 床の座標系（p:0=地平線 → 1=画面手前、off:-1..1=画面全幅） */
+    function rowY(p) { return horizonY + Math.pow(p, 1.9) * (H - horizonY + 30); }
+    function floorX(p, off) { return vpX + off * (14 + Math.pow(p, 1.1) * W * .64); }
+    function floorPt(p, off) { return { x: floorX(p, off), y: rowY(p) }; }
+
+    /* パースの効いた床グリッド（水底に沈むサイバーグリッド） */
     ctx.save();
     ctx.strokeStyle = 'rgba(62,230,218,.10)';
     ctx.lineWidth = 1;
@@ -127,19 +168,13 @@
     const gridFlow = reduce ? 0 : (wt * .35) % 1;
     for (let j = 0; j < 12; j++) {
       const p = (j + gridFlow) / 12;
-      const y = horizonY + Math.pow(p, 2.4) * (H - horizonY + 40);
+      const y = rowY(p);
       const alpha = .02 + Math.pow(p, 2) * .16;
       ctx.strokeStyle = `rgba(62,230,218,${alpha})`;
       ctx.beginPath();
       ctx.moveTo(0, y); ctx.lineTo(W, y);
       ctx.stroke();
     }
-    const glow = ctx.createLinearGradient(0, horizonY - 60, 0, horizonY + 60);
-    glow.addColorStop(0, 'rgba(62,230,218,0)');
-    glow.addColorStop(.5, 'rgba(62,230,218,.10)');
-    glow.addColorStop(1, 'rgba(62,230,218,0)');
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, horizonY - 60, W, 120);
     ctx.restore();
 
     /* 遠景の山 */
@@ -159,79 +194,87 @@
     ctx.fill();
     ctx.restore();
 
-    /* ============ 水流：地平線から手前へ流れる大きな川 ============ */
-    function riverX(p, side) {
-      const cx = vpX + Math.sin(p * 2.8 + wt * .16) * W * .06 * p; // 蛇行を強めに
-      const half = 9 + Math.pow(p, 1.5) * (W * .37);               // 川幅も広く
-      return cx + side * half;
-    }
-    function riverY(p) { return horizonY + Math.pow(p, 1.9) * (H - horizonY + 30); }
-    function riverPt(p, off) {
-      const l = riverX(p, -1), r = riverX(p, 1);
-      return { x: l + (off * .5 + .5) * (r - l), y: riverY(p) };
-    }
+    /* ============ 激流：地平線から下の床一面が流れる ============ */
 
-    ctx.save();
-    const STEPS = 28;
-    ctx.beginPath();
-    ctx.moveTo(riverX(0, -1), riverY(0));
-    for (let i = 1; i <= STEPS; i++) ctx.lineTo(riverX(i / STEPS, -1), riverY(i / STEPS));
-    for (let i = STEPS; i >= 0; i--) ctx.lineTo(riverX(i / STEPS, 1), riverY(i / STEPS));
-    ctx.closePath();
-
-    // 川面（前回より明るく、存在感のある水色）
+    // 水面ベース（床全体をうっすら水色に）
     const wg = ctx.createLinearGradient(0, horizonY, 0, H);
-    wg.addColorStop(0, 'rgba(90,235,225,.26)');
-    wg.addColorStop(.35, 'rgba(60,175,220,.16)');
-    wg.addColorStop(1, 'rgba(45,135,200,.22)');
+    wg.addColorStop(0, 'rgba(90,235,225,.20)');
+    wg.addColorStop(.4, 'rgba(60,175,220,.13)');
+    wg.addColorStop(1, 'rgba(45,135,200,.18)');
     ctx.fillStyle = wg;
+    ctx.fillRect(0, horizonY, W, H - horizonY + 2);
+
+    // 本流の帯（うねりながら流れる明るい急流。全幅の中の勢いの芯）
+    ctx.save();
+    ctx.beginPath();
+    const CSTEPS = 26;
+    for (let i = 0; i <= CSTEPS; i++) {
+      const p = i / CSTEPS;
+      const c = Math.sin(p * 2.8 + wt * .18) * .22 * p;
+      const x = floorX(p, c - (.24 + p * .34));
+      i === 0 ? ctx.moveTo(x, rowY(p)) : ctx.lineTo(x, rowY(p));
+    }
+    for (let i = CSTEPS; i >= 0; i--) {
+      const p = i / CSTEPS;
+      const c = Math.sin(p * 2.8 + wt * .18) * .22 * p;
+      ctx.lineTo(floorX(p, c + (.24 + p * .34)), rowY(p));
+    }
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(120,240,230,.08)';
     ctx.fill();
-    ctx.clip();
+    ctx.restore();
 
-    // 手前へ流れる横波（大きくうねる）
-    const flow = reduce ? 0 : (wt * .55) % 1;
-    for (let j = 0; j < 12; j++) {
-      const p = ((j + flow) % 12) / 12;
+    // 手前へ押し寄せる横波（全幅・大きくうねる）＋波頭の白波
+    const flow = reduce ? 0 : (wt * .6) % 1;
+    for (let j = 0; j < 14; j++) {
+      const p = ((j + flow) % 14) / 14;
       if (p < .02) continue;
-      const y0 = riverY(p);
-      const alpha = .06 + Math.pow(p, 1.5) * .4;
+      const y0 = rowY(p);
+      const amp = 2 + p * 11;
+      const alpha = .05 + Math.pow(p, 1.5) * .38;
+      // 波の本体
       ctx.strokeStyle = `rgba(150,242,235,${alpha})`;
-      ctx.lineWidth = .9 + p * 2.4;
+      ctx.lineWidth = .9 + p * 2.6;
       ctx.beginPath();
-      const l = riverX(p, -1), r = riverX(p, 1);
-      for (let x = l; x <= r; x += 9) {
-        const k = (x - l) / Math.max(r - l, 1);
-        const y = y0 + Math.sin(k * Math.PI * 4 + wt * 2.4 + j) * (2 + p * 8);
-        x === l ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      let prevY = 0;
+      for (let x = 0; x <= W; x += 9) {
+        const k = x / W;
+        const s = Math.sin(k * Math.PI * 6 + wt * 2.6 + j * 1.7)
+          + .5 * Math.sin(k * Math.PI * 13 - wt * 3.4 + j);
+        const y = y0 + s * amp * .55;
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        prevY = y;
+      }
+      ctx.stroke();
+      // 波頭の白波（山になっている部分だけ白く砕ける）
+      ctx.strokeStyle = `rgba(235,253,250,${alpha * .9})`;
+      ctx.lineWidth = 1.4 + p * 2.6;
+      ctx.lineCap = 'round';
+      let inCap = false;
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += 9) {
+        const k = x / W;
+        const s = Math.sin(k * Math.PI * 6 + wt * 2.6 + j * 1.7)
+          + .5 * Math.sin(k * Math.PI * 13 - wt * 3.4 + j);
+        const y = y0 + s * amp * .55;
+        if (s < -.95) { // 波の山（上に凸）
+          inCap ? ctx.lineTo(x, y) : (ctx.moveTo(x, y), inCap = true);
+        } else inCap = false;
       }
       ctx.stroke();
     }
 
-    // 川岸の白いさざ波（両岸ライン）
-    for (const side of [-1, 1]) {
-      ctx.strokeStyle = 'rgba(200,250,245,.16)';
-      ctx.lineWidth = 1.4;
-      ctx.beginPath();
-      for (let i = 2; i <= STEPS; i++) {
-        const p = i / STEPS;
-        const x = riverX(p, side) - side * Math.abs(Math.sin(p * 9 + wt * 1.6)) * 5 * p;
-        const y = riverY(p);
-        i === 2 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-    }
-
-    // 流れの筋（水面を滑る光）
+    // 流れの筋（全幅を滑る光。激流なので速く長く）
     for (const s of streaks) {
       if (!reduce) {
-        s.p += s.speed * WSPEED * (0.4 + s.p * 1.8);
-        if (s.p > 1.02) { s.p = 0; s.off = (Math.random() - .5) * 1.6; }
+        s.p += s.speed * WSPEED * (0.35 + s.p * 2);
+        if (s.p > 1.03) { s.p = 0; s.off = (Math.random() - .5) * 2; }
       }
-      const a1 = riverPt(s.p, s.off);
-      const a2 = riverPt(Math.min(s.p + .045, 1.02), s.off * .96);
-      const alpha = .1 + s.p * .5;
+      const a1 = floorPt(s.p, s.off);
+      const a2 = floorPt(Math.min(s.p + .06, 1.03), s.off);
+      const alpha = .09 + s.p * .48;
       ctx.strokeStyle = `rgba(180,248,240,${alpha})`;
-      ctx.lineWidth = .9 + s.p * 2.2;
+      ctx.lineWidth = s.w * (0.5 + s.p * 1.6);
       ctx.lineCap = 'round';
       ctx.beginPath();
       ctx.moveTo(a1.x, a1.y);
@@ -240,15 +283,15 @@
     }
 
     // 波紋
-    if (!reduce && Math.random() < .07 * WSPEED * 2 && ripples.length < 10) {
-      ripples.push({ p: .25 + Math.random() * .72, off: (Math.random() - .5) * 1.4, r: 0, life: 0 });
+    if (!reduce && Math.random() < .12 && ripples.length < 12) {
+      ripples.push({ p: .25 + Math.random() * .72, off: (Math.random() - .5) * 1.9, r: 0, life: 0 });
     }
     for (let i = ripples.length - 1; i >= 0; i--) {
       const rp = ripples[i];
-      rp.life += .014 * WSPEED; rp.r += (.7 + rp.p * 2.8) * WSPEED;
+      rp.life += .014 * WSPEED; rp.r += (.7 + rp.p * 3) * WSPEED;
       if (rp.life >= 1) { ripples.splice(i, 1); continue; }
-      const pos = riverPt(rp.p, rp.off);
-      const alpha = (1 - rp.life) * (.16 + rp.p * .32);
+      const pos = floorPt(rp.p, rp.off);
+      const alpha = (1 - rp.life) * (.14 + rp.p * .3);
       ctx.strokeStyle = `rgba(190,248,240,${alpha})`;
       ctx.lineWidth = 1.2;
       ctx.beginPath();
@@ -258,9 +301,9 @@
 
     // 煌めき
     for (const g of glints) {
-      const pos = riverPt(g.p, g.off);
-      const tw = .5 + .5 * Math.sin(wt * 2.2 + g.tw);
-      const alpha = tw * (.14 + g.p * .5);
+      const pos = floorPt(g.p, g.off);
+      const tw = .5 + .5 * Math.sin(wt * 2.4 + g.tw);
+      const alpha = tw * (.12 + g.p * .48);
       const size = .8 + g.p * 2.6;
       ctx.fillStyle = `rgba(225,255,250,${alpha})`;
       ctx.beginPath();
@@ -272,10 +315,10 @@
       ctx.fill();
     }
 
-    /* 岩と白波（水しぶきの発生源） */
+    /* 岩と砕ける白波（左右の端寄り）＋水しぶき */
     for (const rk of ROCKS) {
-      const pos = riverPt(rk.p, rk.off);
-      const s = 8 + rk.p * 26; // 手前ほど大きい
+      const pos = floorPt(rk.p, rk.off);
+      const s = (8 + rk.p * 30) * (0.6 + rk.splash * .4);
       // 岩本体
       const rg = ctx.createRadialGradient(pos.x - s * .3, pos.y - s * .4, s * .1, pos.x, pos.y, s);
       rg.addColorStop(0, '#2a3648');
@@ -285,43 +328,43 @@
       ctx.beginPath();
       ctx.ellipse(pos.x, pos.y - s * .18, s, s * .55, 0, 0, Math.PI * 2);
       ctx.fill();
-      // 岩にぶつかる白波（上流側で泡立つ）
-      const foam = .5 + .5 * Math.sin(wt * 3 + rk.seed);
-      ctx.strokeStyle = `rgba(230,252,250,${.22 + foam * .25})`;
-      ctx.lineWidth = 2 + rk.p * 2.4;
+      // 砕ける白波
+      const foam = .5 + .5 * Math.sin(wt * 3.4 + rk.seed);
+      ctx.strokeStyle = `rgba(235,253,250,${(.2 + foam * .3) * Math.min(rk.splash, 1)})`;
+      ctx.lineWidth = 2 + rk.p * 3;
       ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y - s * .05, s * 1.2, s * .4, 0, Math.PI, Math.PI * 2);
+      ctx.ellipse(pos.x, pos.y - s * .05, s * 1.25, s * .42, 0, Math.PI, Math.PI * 2);
       ctx.stroke();
-      ctx.strokeStyle = `rgba(230,252,250,${.1 + foam * .14})`;
+      ctx.strokeStyle = `rgba(235,253,250,${(.09 + foam * .13) * Math.min(rk.splash, 1)})`;
       ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y + s * .12, s * 1.55, s * .5, 0, Math.PI * 1.05, Math.PI * 1.95);
+      ctx.ellipse(pos.x, pos.y + s * .14, s * 1.6, s * .52, 0, Math.PI * 1.05, Math.PI * 1.95);
       ctx.stroke();
-      // 水しぶきを発生
-      if (!reduce && drops.length < MAX_DROPS && Math.random() < .5) {
-        const n = 1 + Math.floor(Math.random() * 2);
+      // 水しぶき発生（splash係数で量を制御。中央の岩はほぼ出さない）
+      if (!reduce && drops.length < MAX_DROPS && Math.random() < .55 * rk.splash) {
+        const n = 1 + Math.floor(Math.random() * 3);
         for (let k = 0; k < n; k++) {
           drops.push({
-            x: pos.x + (Math.random() - .5) * s * 1.4,
+            x: pos.x + (Math.random() - .5) * s * 1.5,
             y: pos.y - s * .3,
-            vx: (Math.random() - .5) * (1.4 + rk.p * 2.4),
-            vy: -(1.6 + Math.random() * 2.8) * (.45 + rk.p),
+            vx: (Math.random() - .5) * (1.6 + rk.p * 3),
+            vy: -(1.8 + Math.random() * 3.4) * (.45 + rk.p) * (0.7 + rk.splash * .4),
             g: .085 * (.5 + rk.p),
             life: 0,
-            size: .7 + Math.random() * (1 + rk.p * 2),
+            size: .7 + Math.random() * (1 + rk.p * 2.4),
           });
         }
       }
     }
 
-    /* 水しぶきの粒（放物線を描いて上がる） */
+    /* 水しぶきの粒 */
     for (let i = drops.length - 1; i >= 0; i--) {
       const d = drops[i];
       if (!reduce) {
         d.x += d.vx * WSPEED;
         d.vy += d.g * WSPEED;
         d.y += d.vy * WSPEED;
-        d.life += .022 * WSPEED;
+        d.life += .02 * WSPEED;
       }
       if (d.life >= 1) { drops.splice(i, 1); continue; }
       const alpha = (1 - d.life) * .8;
@@ -331,14 +374,49 @@
       ctx.fill();
     }
 
-    ctx.restore(); // 川のクリップ解除
+    /* 川霧（画面下部の両端からゆっくり立ちのぼる） */
+    for (const m of mists) {
+      if (!reduce) {
+        m.y -= m.sp;
+        if (m.y < -.2) { m.y = 1.1; m.x = Math.random(); m.side = Math.random() > .5 ? 1 : -1; }
+      }
+      // 両端に寄せる（0..0.3 / 0.7..1.0 のレンジ）
+      const nx = m.side > 0 ? .72 + m.x * .32 : -.04 + m.x * .32;
+      const px = nx * W + Math.sin(wt * .4 + m.ph) * 24;
+      const py = horizonY + m.y * (H - horizonY) * 1.15;
+      const g = ctx.createRadialGradient(px, py, m.r * .15, px, py, m.r);
+      const a = .05 + .05 * Math.sin(wt * .6 + m.ph);
+      g.addColorStop(0, `rgba(190,240,240,${Math.max(a, .03)})`);
+      g.addColorStop(1, 'rgba(190,240,240,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(px, py, m.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    /* 風に舞う飛沫（画面全体を横切る細い糸） */
+    for (const sp of spray) {
+      if (!reduce) {
+        sp.x += sp.vx * WSPEED;
+        sp.y += sp.vy * WSPEED;
+        if (sp.x > 1.1) { sp.x = -.1; sp.y = Math.random() * .8; }
+        if (sp.y > 1.05) sp.y = 0;
+      }
+      const px = sp.x * W, py = sp.y * H;
+      ctx.strokeStyle = `rgba(200,245,242,${sp.a})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.lineTo(px + sp.len, py + sp.len * .22);
+      ctx.stroke();
+    }
 
     // 川の源（地平線の光）
-    const src = ctx.createRadialGradient(vpX, horizonY, 0, vpX, horizonY, 110);
-    src.addColorStop(0, 'rgba(150,242,232,.26)');
+    const src = ctx.createRadialGradient(vpX, horizonY, 0, vpX, horizonY, 130);
+    src.addColorStop(0, 'rgba(150,242,232,.24)');
     src.addColorStop(1, 'rgba(150,242,232,0)');
     ctx.fillStyle = src;
-    ctx.fillRect(vpX - 110, horizonY - 60, 220, 120);
+    ctx.fillRect(vpX - 130, horizonY - 70, 260, 140);
 
     /* ============ 墨煙 ============ */
     for (let ci = 0; ci < clouds.length; ci++) {
