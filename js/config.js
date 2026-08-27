@@ -18,10 +18,10 @@ window.SITE_CONFIG = {
 
   /* 事前エントリー（立候補）GoogleフォームのURL（作成後に差し替え）
    * にんセレ当日に発表する人の人数把握用 */
-  entryFormUrl: "#",
+  entryFormUrl: "https://docs.google.com/forms/d/e/1FAIpQLSe_Bi6teVXCJsu9WYHDqJJbWOEbKomxnnpQrlJx3jHyhqHHTQ/viewform",
 
-  /* にんセレ詳細ページのURL（決まり次第差し替え） */
-  ninseleUrl: "#",
+  /* にんセレ公式サイトのURL */
+  ninseleUrl: "https://nincele.ritsuto.org/",
 
   /* トップページに表示する候補者の最大数（0 = 全員表示）
    * 全員は candidates.html に表示されます */
