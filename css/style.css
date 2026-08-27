@@ -622,6 +622,12 @@ body.phase-voting .voting-banner{display:block}
   font-family:var(--font-mincho);font-weight:800;
   font-size:clamp(1.15rem,3.2vw,1.6rem);letter-spacing:.08em;line-height:1.6;color:var(--sumi);
 }
+.kb-headline h3.kb-big{ /* 号外の大見出し（今年の選挙はここが違う） */
+  font-family:var(--font-brush);
+  font-size:clamp(1.5rem,4.8vw,2.5rem);letter-spacing:.07em;line-height:1.5;
+  color:#14100c;
+}
+.kb-accent{color:var(--shu)}
 .kb-date{font-family:var(--font-mincho);font-size:.75rem;letter-spacing:.25em;color:var(--sumi-soft);margin-top:.5rem}
 .kb-body{font-family:var(--font-mincho);color:var(--sumi)}
 .kb-body strong{color:var(--shu)}
