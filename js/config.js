@@ -16,6 +16,10 @@ window.SITE_CONFIG = {
   /* CNGT申請フォームのURL（決まり次第差し替え） */
   cngtFormUrl: "#",
 
+  /* 事前エントリー（立候補）GoogleフォームのURL（作成後に差し替え）
+   * にんセレ当日に発表する人の人数把握用 */
+  entryFormUrl: "#",
+
   /* にんセレ詳細ページのURL（決まり次第差し替え） */
   ninseleUrl: "#",
 

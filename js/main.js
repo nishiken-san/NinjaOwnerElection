@@ -9,6 +9,25 @@
   document.querySelectorAll('[data-vote-link]').forEach(a => { if (CFG.voteUrl) a.href = CFG.voteUrl; });
   document.querySelectorAll('[data-cngt-link]').forEach(a => { if (CFG.cngtFormUrl) a.href = CFG.cngtFormUrl; });
   document.querySelectorAll('[data-ninsele-link]').forEach(a => { if (CFG.ninseleUrl) a.href = CFG.ninseleUrl; });
+  document.querySelectorAll('[data-entry-link]').forEach(a => { if (CFG.entryFormUrl) a.href = CFG.entryFormUrl; });
+
+  /* 投票前（pre）は投票ボタンを無効化し、ラベルはそのままに
+   * 「COMING SOON」タグを重ねる。config.js の phase を "voting" に
+   * すると自動で本番リンクの有効なボタンに戻る。 */
+  if (CFG.phase !== 'voting') {
+    document.querySelectorAll('[data-vote-link]').forEach(a => {
+      a.removeAttribute('href');
+      a.removeAttribute('target');
+      a.setAttribute('aria-disabled', 'true');
+      a.classList.add('btn-disabled', 'btn-soon');
+      if (!a.querySelector('.soon-tag')) {
+        const s = document.createElement('span');
+        s.className = 'soon-tag';
+        s.textContent = 'COMING SOON';
+        a.appendChild(s);
+      }
+    });
+  }
 
   /* ---------- 候補者カードのレンダリング ---------- */
   const KUNAI_SVG = `
