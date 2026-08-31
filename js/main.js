@@ -48,8 +48,9 @@
     </svg>`;
 
   const BADGE = {
-    ninsele: { label: 'にんセレ参陣', cls: '' },
-    discord: { label: 'Discord参陣', cls: ' discord' },
+    ninsele: { label: 'にんセレ登壇', cls: '' },
+    form: { label: 'エントリー', cls: ' discord' },
+    discord: { label: 'エントリー', cls: ' discord' }, // 旧キー互換
   };
 
   function esc(s) {
