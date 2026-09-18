@@ -14,7 +14,7 @@ window.SITE_CONFIG = {
   voteUrl: "https://tohyo.mad-member-tools.com/",
 
   /* CNGT申請フォームのURL（決まり次第差し替え） */
-  cngtFormUrl: "#",
+  cngtFormUrl: "https://cngt.vibe.co.jp/",
 
   /* 事前エントリー（立候補）GoogleフォームのURL（作成後に差し替え）
    * にんセレ当日に発表する人の人数把握用 */
