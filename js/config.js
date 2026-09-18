@@ -9,8 +9,7 @@ window.SITE_CONFIG = {
    *            ヒーロー直下に自動で移動し、「投票受付中」表示になる） */
   phase: "pre",
 
-  /* 投票ページのリンク先（仮：ホルダー投票くんのトップ）
-   * 本番は https://tohyo.mad-member-tools.com/vote/XXXX の形式に差し替え */
+  /* 投票ページのリンク先（ホルダー投票くん） */
   voteUrl: "https://tohyo.mad-member-tools.com/",
 
   /* 投票ボタンを有効にするか（COMING SOON表示の解除）
@@ -18,11 +17,10 @@ window.SITE_CONFIG = {
    * phase を "voting" にした場合も自動で有効になる */
   voteLinksOpen: true,
 
-  /* CNGT申請フォームのURL（決まり次第差し替え） */
+  /* CNGT申請フォームのURL */
   cngtFormUrl: "https://cngt.vibe.co.jp/",
 
-  /* 事前エントリー（立候補）GoogleフォームのURL（作成後に差し替え）
-   * にんセレ当日に発表する人の人数把握用 */
+  /* 立候補（声明文）GoogleフォームのURL */
   entryFormUrl: "https://docs.google.com/forms/d/e/1FAIpQLSe_Bi6teVXCJsu9WYHDqJJbWOEbKomxnnpQrlJx3jHyhqHHTQ/viewform",
 
   /* にんセレ公式サイトのURL */
