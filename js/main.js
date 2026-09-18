@@ -14,7 +14,7 @@
   /* 投票前（pre）は投票ボタンを無効化し、ラベルはそのままに
    * 「COMING SOON」タグを重ねる。config.js の phase を "voting" に
    * すると自動で本番リンクの有効なボタンに戻る。 */
-  if (CFG.phase !== 'voting') {
+  if (CFG.phase !== 'voting' && !CFG.voteLinksOpen) {
     document.querySelectorAll('[data-vote-link]').forEach(a => {
       a.removeAttribute('href');
       a.removeAttribute('target');

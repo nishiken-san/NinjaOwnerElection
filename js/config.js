@@ -13,6 +13,11 @@ window.SITE_CONFIG = {
    * 本番は https://tohyo.mad-member-tools.com/vote/XXXX の形式に差し替え */
   voteUrl: "https://tohyo.mad-member-tools.com/",
 
+  /* 投票ボタンを有効にするか（COMING SOON表示の解除）
+   * true = 全ページの投票ボタンがリンクとして機能する
+   * phase を "voting" にした場合も自動で有効になる */
+  voteLinksOpen: true,
+
   /* CNGT申請フォームのURL（決まり次第差し替え） */
   cngtFormUrl: "https://cngt.vibe.co.jp/",
 

@@ -565,7 +565,8 @@ section{padding:6rem 1.2rem;position:relative}
 .vote-step p{font-size:.8rem;color:rgba(243,236,217,.65);line-height:1.9}
 .vote-step a{color:var(--neon)}
 .vote-cta{text-align:center}
-.vote-cta .btn{font-size:1.05rem;padding:1.1rem 3rem}
+.vote-cta .btn{font-size:1.05rem;padding:1.1rem 3rem;margin:.35rem .45rem}
+.vote-cta .btn-neon{font-size:.95rem;padding:1.05rem 2rem}
 .vote-cta .small{
   display:block;margin-top:1rem;font-size:.75rem;letter-spacing:.15em;color:rgba(243,236,217,.5);
 }
