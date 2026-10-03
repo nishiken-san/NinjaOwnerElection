@@ -1,68 +1,132 @@
 /* ============================================================
- * 候補者絵巻：読みやすさ重視の上書きスタイル（style.css の後に読み込む）
- *  - 3名程度を想定し、1列・大判の巻物で声明文全文を読ませる
- *  - 声明文の改行をそのまま保持
- *  - アイコン（クナイからぶら下がる）をクリックでSNSへ
+ * 候補者絵巻：概略カード（横並び）＋ 横に開く巻物モーダル
+ *  style.css の後に読み込む上書き用
  * ============================================================ */
 
-/* 1列・幅広 */
+/* ---------- 概略カード：3名横並び ---------- */
 .cand-grid{
-  grid-template-columns:1fr;
-  max-width:860px;
-  gap:4rem;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:3.2rem 2rem;max-width:1040px;
 }
-.cand-scroll{
-  padding:3rem clamp(1.6rem,5vw,3.2rem) 2.4rem;
+.cand-card{
+  padding:2.8rem 1.6rem 1.6rem;cursor:pointer;
+  transition:transform .25s ease;
+  display:flex;flex-direction:column;
 }
-
-/* 名前・バッジ */
+.cand-card:hover,.cand-card:focus-visible{transform:translateY(-4px);outline:none}
+.cand-card .washi-content{display:flex;flex-direction:column;flex:1}
 .cand-name{
-  font-size:clamp(1.6rem,4.5vw,2rem);
-  letter-spacing:.16em;
-  margin-bottom:1.2rem;
+  font-size:clamp(1.3rem,3.6vw,1.6rem);letter-spacing:.14em;
+  margin-bottom:.8rem;padding-left:3rem; /* クナイの刃を避ける */
 }
-.cand-badge{
-  margin-left:4rem;
-  font-size:.74rem;
+.cand-summary{
+  font-family:var(--font-mincho);font-size:.92rem;line-height:1.95;
+  color:var(--sumi);text-align:left;flex:1;
+  display:-webkit-box;-webkit-line-clamp:7;-webkit-box-orient:vertical;overflow:hidden;
 }
+.cand-open{
+  display:block;margin-top:1rem;align-self:flex-end;
+  font-family:var(--font-mincho);font-weight:700;font-size:.82rem;
+  letter-spacing:.12em;color:var(--shu);
+}
+.cand-card:hover .cand-open{color:var(--shu-bright)}
 
-/* 声明文：全文を読ませる */
-.cand-statement{
-  font-size:clamp(1rem,2.3vw,1.08rem);
-  line-height:2.15;
-  letter-spacing:.03em;
-  text-align:left;
-  white-space:pre-line;   /* 改行をそのまま表示 */
-  overflow-wrap:anywhere;
-}
-
-/* SNSリンク（本文下） */
-.cand-sns{
-  display:inline-block;margin-top:1.4rem;
-  font-family:var(--font-mincho);font-weight:700;font-size:.9rem;
-  letter-spacing:.1em;color:var(--shu);text-decoration:none;
-  border-bottom:1px solid rgba(201,58,43,.5);
-}
-.cand-sns:hover{color:var(--shu-bright);border-bottom-color:var(--shu-bright)}
-
-/* アイコン：大きめ＆クリック可能 */
-.hang{width:64px;left:-38px}
+/* アイコン：クリックでSNSへ */
+.hang{width:58px;left:-33px}
 .kunai-avatar{
-  width:60px;height:60px;
-  border-width:2.5px;
-  text-decoration:none;cursor:pointer;
-  transition:transform .2s,box-shadow .2s;
+  width:54px;height:54px;border-width:2.5px;
+  text-decoration:none;cursor:pointer;transition:transform .2s,box-shadow .2s;
 }
 a.kunai-avatar:hover,a.kunai-avatar:focus-visible{
   transform:scale(1.08);
   box-shadow:0 0 22px rgba(80,205,235,.65),0 6px 12px rgba(0,0,0,.5);
 }
-.kunai-wrap{pointer-events:none}      /* クナイ本体は装飾 */
-.kunai-wrap .hang{pointer-events:auto} /* アイコンだけクリック可 */
-
-/* スマホ：アイコンが画面外に切れないよう内側へ */
+.kunai-wrap{pointer-events:none}
+.kunai-wrap .hang{pointer-events:auto}
 @media(max-width:760px){
-  .kunai-wrap{left:24px}
-  .cand-badge{margin-left:4.6rem}
-  .cand-scroll{padding-top:3.4rem}
+  .kunai-wrap{left:20px}
+  .cand-name{padding-left:3.6rem}
+}
+
+/* ---------- 巻物モーダル ---------- */
+body.scroll-lock{overflow:hidden}
+.scroll-modal{
+  position:fixed;inset:0;z-index:1000;
+  display:grid;place-items:center;padding:1rem;
+  background:rgba(4,6,12,.72);backdrop-filter:blur(6px);
+  opacity:0;transition:opacity .35s ease;
+}
+.scroll-modal.open{opacity:1}
+.scroll-stage{
+  --paper-w:min(820px,calc(100vw - 96px));
+  display:flex;align-items:stretch;justify-content:center;
+  max-height:86vh;
+}
+/* 縦の木軸（左右） */
+.v-roller{
+  flex:0 0 auto;width:26px;border-radius:13px;position:relative;z-index:3;
+  background:linear-gradient(90deg,#191008,#5c4630 40%,#3a2c20 60%,#191008);
+  box-shadow:0 8px 20px rgba(0,0,0,.7),inset 1px 0 2px rgba(255,255,255,.25);
+}
+.v-roller::before,.v-roller::after{ /* 軸先 */
+  content:"";position:absolute;left:50%;transform:translateX(-50%);
+  width:40px;height:22px;border-radius:9px;
+  background:radial-gradient(circle at 35% 35%,#e8d9a8,#a4823c 55%,#5d4517);
+  box-shadow:0 3px 8px rgba(0,0,0,.6);
+}
+.v-roller::before{top:-12px}
+.v-roller::after{bottom:-12px}
+/* 紙：幅0から横に広がる */
+.scroll-paper{
+  width:0;overflow:hidden;position:relative;
+  transition:width .9s cubic-bezier(.22,.8,.3,1);
+  overflow-y:auto;overscroll-behavior:contain;
+}
+.scroll-modal.open .scroll-paper{width:var(--paper-w)}
+.scroll-paper::before{filter:none} /* 横開きの縁は直線でOK（毛羽立ちは不要） */
+/* 中身は最初から最終幅で固定（開く途中に文字が折り返し直さない） */
+.scroll-inner{
+  width:var(--paper-w);
+  padding:2.4rem clamp(1.4rem,4vw,3rem) 2.4rem;
+}
+.scroll-close{
+  position:absolute;top:.6rem;right:.8rem;z-index:5;
+  width:36px;height:36px;border:1.5px solid var(--sumi);border-radius:50%;
+  background:transparent;color:var(--sumi);font-size:1.3rem;line-height:1;cursor:pointer;
+}
+.scroll-close:hover{background:var(--sumi);color:var(--washi)}
+.scroll-head{
+  display:flex;align-items:center;gap:1rem;
+  border-bottom:2px solid rgba(34,28,22,.55);padding-bottom:1rem;margin-bottom:1.4rem;
+}
+.scroll-icon{
+  width:64px;height:64px;border-radius:50%;object-fit:cover;flex:0 0 auto;
+  border:2.5px solid var(--shu);box-shadow:0 4px 10px rgba(0,0,0,.35);
+}
+.scroll-name{
+  font-family:var(--font-brush);font-weight:800;
+  font-size:clamp(1.5rem,4.5vw,2rem);letter-spacing:.14em;color:var(--sumi);
+}
+.cand-sns{
+  display:inline-block;margin-top:.2rem;
+  font-family:var(--font-mincho);font-weight:700;font-size:.85rem;
+  letter-spacing:.1em;color:var(--shu);text-decoration:none;
+  border-bottom:1px solid rgba(201,58,43,.5);
+}
+.cand-sns:hover{color:var(--shu-bright)}
+.scroll-statement{
+  font-family:var(--font-mincho);font-size:clamp(.98rem,2.2vw,1.06rem);
+  line-height:2.15;letter-spacing:.03em;color:var(--sumi);
+  white-space:pre-line;overflow-wrap:anywhere;
+}
+.scroll-statement a{color:var(--shu);word-break:break-all}
+.scroll-actions{margin-top:2rem;text-align:center}
+
+@media(max-width:600px){
+  .scroll-stage{--paper-w:calc(100vw - 72px);max-height:90vh}
+  .v-roller{width:20px}
+  .scroll-modal{padding:.6rem}
+}
+@media(prefers-reduced-motion:reduce){
+  .scroll-paper{transition:none}
 }

@@ -7,7 +7,7 @@ window.SITE_CONFIG = {
    * "pre"    : 立候補募集〜投票前（通常のページ順）
    * "voting" : 投票期間中（トップページで「候補者の声明＋投票」が
    *            ヒーロー直下に自動で移動し、「投票受付中」表示になる） */
-  phase: "pre",
+  phase: "voting",
 
   /* 投票ページのリンク先（ホルダー投票くん） */
   voteUrl: "https://tohyo.mad-member-tools.com/",
