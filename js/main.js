@@ -5,15 +5,14 @@
   const CFG = window.SITE_CONFIG || {};
   const CANDS = window.CANDIDATES || [];
 
-  /* ---------- 投票リンク・各種URLの適用 ---------- */
+  /* ---------- 各種URLの適用 ---------- */
   document.querySelectorAll('[data-vote-link]').forEach(a => { if (CFG.voteUrl) a.href = CFG.voteUrl; });
   document.querySelectorAll('[data-cngt-link]').forEach(a => { if (CFG.cngtFormUrl) a.href = CFG.cngtFormUrl; });
   document.querySelectorAll('[data-ninsele-link]').forEach(a => { if (CFG.ninseleUrl) a.href = CFG.ninseleUrl; });
   document.querySelectorAll('[data-entry-link]').forEach(a => { if (CFG.entryFormUrl) a.href = CFG.entryFormUrl; });
 
-  /* 投票前（pre）は投票ボタンを無効化し、ラベルはそのままに
-   * 「COMING SOON」タグを重ねる。config.js の phase を "voting" に
-   * すると自動で本番リンクの有効なボタンに戻る。 */
+  /* 投票前は投票ボタンを無効化し「COMING SOON」タグを重ねる
+   * （voteLinksOpen: true または phase: "voting" で有効化） */
   if (CFG.phase !== 'voting' && !CFG.voteLinksOpen) {
     document.querySelectorAll('[data-vote-link]').forEach(a => {
       a.removeAttribute('href');
@@ -31,7 +30,7 @@
 
   /* ---------- 候補者カードのレンダリング ---------- */
   const KUNAI_SVG = `
-    <svg class="blade" viewBox="0 0 64 150" xmlns="http://www.w3.org/2000/svg">
+    <svg class="blade" viewBox="0 0 64 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <defs>
         <linearGradient id="steel" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stop-color="#4a5568"/>
@@ -48,7 +47,7 @@
     </svg>`;
 
   const BADGE = {
-    ninsele: { label: 'にんセレ登壇', cls: '' },
+    ninsele: { label: 'にんセレ参陣', cls: '' },
     form: { label: 'エントリー', cls: ' discord' },
     discord: { label: 'エントリー', cls: ' discord' }, // 旧キー互換
   };
@@ -59,22 +58,30 @@
   }
 
   function candCard(c) {
-    const b = BADGE[c.badge] || BADGE.ninsele;
-    const icon = c.icon
-      ? `<img src="${esc(c.icon)}" alt="">`
+    const b = BADGE[c.badge] || BADGE.form;
+    const iconInner = c.icon
+      ? `<img src="${esc(c.icon)}" alt="${esc(c.name)}のアイコン">`
       : 'icon';
+    // アイコンクリックでSNSへ
+    const avatar = c.sns
+      ? `<a class="kunai-avatar" href="${esc(c.sns)}" target="_blank" rel="noopener" title="${esc(c.name)}さんのSNSを開く">${iconInner}</a>`
+      : `<div class="kunai-avatar">${iconInner}</div>`;
+    const snsLink = c.sns
+      ? `<a class="cand-sns" href="${esc(c.sns)}" target="_blank" rel="noopener">${esc(c.name)}さんのXを見る →</a>`
+      : '';
     return `
       <article class="cand-scroll washi-sheet reveal">
         <span class="axis l" aria-hidden="true"></span><span class="axis r" aria-hidden="true"></span>
         <span class="edge-shade" aria-hidden="true"></span>
-        <div class="kunai-wrap" aria-hidden="true">
+        <div class="kunai-wrap">
           ${KUNAI_SVG}
-          <div class="hang"><div class="kunai-avatar">${icon}</div></div>
+          <div class="hang">${avatar}</div>
         </div>
         <div class="washi-content">
           <span class="cand-badge${b.cls}">${b.label}</span>
           <h3 class="cand-name">${esc(c.name)}</h3>
           <p class="cand-statement">${esc(c.statement)}</p>
+          ${snsLink}
         </div>
       </article>`;
   }
@@ -91,10 +98,11 @@
     const limit = grid.dataset.candGrid === 'top' && CFG.candidatesOnTop > 0
       ? CFG.candidatesOnTop : Infinity;
     const list = CANDS.slice(0, limit);
-    grid.innerHTML = list.map(candCard).join('') + EMPTY_CARD;
-    // トップページで表示しきれない分がある場合は「すべて見る」を出す
+    // 「募集中」枠は投票フェーズに入ったら出さない
+    const empty = CFG.phase === 'voting' ? '' : EMPTY_CARD;
+    grid.innerHTML = list.map(candCard).join('') + empty;
     const more = document.getElementById('cand-more');
-    if (more) more.style.display = (CANDS.length > limit) ? 'block' : (grid.dataset.candGrid === 'top' ? 'block' : 'none');
+    if (more) more.style.display = (grid.dataset.candGrid === 'top' || CANDS.length > limit) ? 'block' : 'none';
   });
 
   /* ---------- フェーズ切替（投票期間中の並び替え） ---------- */
@@ -105,12 +113,11 @@
       const cand = document.getElementById('candidates');
       const vote = document.getElementById('vote');
       if (hero && cand && vote) {
-        hero.after(vote);   // hero → vote
-        hero.after(cand);   // hero → candidates → vote
+        hero.after(vote);
+        hero.after(cand);
       }
       const eyebrow = document.querySelector('.hero-eyebrow');
       if (eyebrow) eyebrow.textContent = '投票受付中 — CRYPTONINJA OWNER ELECTION 2026';
-      // ヒーローCTAの強調を投票に入れ替え
       const ctaVote = document.getElementById('cta-vote');
       const ctaRun = document.getElementById('cta-run');
       const ctaWrap = document.querySelector('.hero-cta');
@@ -131,7 +138,7 @@
         io.unobserve(e.target);
       }
     }
-  }, { threshold: .18 });
+  }, { threshold: .12 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
   /* ---------- NFTカードの3D傾き ---------- */

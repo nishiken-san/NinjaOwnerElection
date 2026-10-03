@@ -1,0 +1,68 @@
+/* ============================================================
+ * 候補者絵巻：読みやすさ重視の上書きスタイル（style.css の後に読み込む）
+ *  - 3名程度を想定し、1列・大判の巻物で声明文全文を読ませる
+ *  - 声明文の改行をそのまま保持
+ *  - アイコン（クナイからぶら下がる）をクリックでSNSへ
+ * ============================================================ */
+
+/* 1列・幅広 */
+.cand-grid{
+  grid-template-columns:1fr;
+  max-width:860px;
+  gap:4rem;
+}
+.cand-scroll{
+  padding:3rem clamp(1.6rem,5vw,3.2rem) 2.4rem;
+}
+
+/* 名前・バッジ */
+.cand-name{
+  font-size:clamp(1.6rem,4.5vw,2rem);
+  letter-spacing:.16em;
+  margin-bottom:1.2rem;
+}
+.cand-badge{
+  margin-left:4rem;
+  font-size:.74rem;
+}
+
+/* 声明文：全文を読ませる */
+.cand-statement{
+  font-size:clamp(1rem,2.3vw,1.08rem);
+  line-height:2.15;
+  letter-spacing:.03em;
+  text-align:left;
+  white-space:pre-line;   /* 改行をそのまま表示 */
+  overflow-wrap:anywhere;
+}
+
+/* SNSリンク（本文下） */
+.cand-sns{
+  display:inline-block;margin-top:1.4rem;
+  font-family:var(--font-mincho);font-weight:700;font-size:.9rem;
+  letter-spacing:.1em;color:var(--shu);text-decoration:none;
+  border-bottom:1px solid rgba(201,58,43,.5);
+}
+.cand-sns:hover{color:var(--shu-bright);border-bottom-color:var(--shu-bright)}
+
+/* アイコン：大きめ＆クリック可能 */
+.hang{width:64px;left:-38px}
+.kunai-avatar{
+  width:60px;height:60px;
+  border-width:2.5px;
+  text-decoration:none;cursor:pointer;
+  transition:transform .2s,box-shadow .2s;
+}
+a.kunai-avatar:hover,a.kunai-avatar:focus-visible{
+  transform:scale(1.08);
+  box-shadow:0 0 22px rgba(80,205,235,.65),0 6px 12px rgba(0,0,0,.5);
+}
+.kunai-wrap{pointer-events:none}      /* クナイ本体は装飾 */
+.kunai-wrap .hang{pointer-events:auto} /* アイコンだけクリック可 */
+
+/* スマホ：アイコンが画面外に切れないよう内側へ */
+@media(max-width:760px){
+  .kunai-wrap{left:24px}
+  .cand-badge{margin-left:4.6rem}
+  .cand-scroll{padding-top:3.4rem}
+}
