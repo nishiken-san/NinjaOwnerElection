@@ -10,7 +10,7 @@ window.SITE_CONFIG = {
   phase: "voting",
 
   /* 投票ページのリンク先（ホルダー投票くん） */
-  voteUrl: "https://tohyo.mad-member-tools.com/",
+  voteUrl: "https://tohyo.mad-member-tools.com/vote/u4ppp2PtuM8JCCwT",
 
   /* 投票ボタンを有効にするか（COMING SOON表示の解除）
    * true = 全ページの投票ボタンがリンクとして機能する
