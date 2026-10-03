@@ -124,13 +124,17 @@
     modal.innerHTML = `
       <div class="scroll-stage" role="dialog" aria-modal="true" aria-label="候補者の声明文">
         <span class="v-roller" aria-hidden="true"></span>
-        <div class="scroll-paper washi-sheet">
-          <div class="scroll-inner washi-content">
-            <button class="scroll-close" type="button" aria-label="閉じる">×</button>
-            <div class="scroll-head"></div>
-            <p class="scroll-statement"></p>
-            <div class="scroll-actions">
-              <a class="btn btn-shu" data-vote-link href="${esc(CFG.voteUrl || '#')}" target="_blank" rel="noopener">この候補者に投票する（投票ページへ）</a>
+        <div class="scroll-paper">
+          <div class="scroll-inner washi-sheet">
+            <div class="scroll-body washi-content">
+              <div class="scroll-head">
+                <div class="scroll-head-main"></div>
+                <button class="scroll-close" type="button" aria-label="閉じる">×</button>
+              </div>
+              <p class="scroll-statement"></p>
+              <div class="scroll-actions">
+                <a class="btn btn-shu" data-vote-link href="${esc(CFG.voteUrl || '#')}" target="_blank" rel="noopener">この候補者に投票する（投票ページへ）</a>
+              </div>
             </div>
           </div>
         </div>
@@ -146,10 +150,12 @@
     return modal;
   }
 
+  let gen = 0; // 開閉の世代（古い close の後処理を無効化する）
   function openScroll(i) {
     const c = CANDS[i]; if (!c) return;
     const m = ensureModal();
-    m.querySelector('.scroll-head').innerHTML = `
+    gen++;
+    m.querySelector('.scroll-head-main').innerHTML = `
       ${c.icon ? `<img class="scroll-icon" src="${esc(c.icon)}" alt="">` : ''}
       <div>
         <h3 class="scroll-name">${esc(c.name)}</h3>
@@ -166,12 +172,17 @@
 
   function closeScroll() {
     if (!modal || modal.hidden) return;
+    const myGen = ++gen;
     modal.classList.remove('open');
     document.body.classList.remove('scroll-lock');
     const paper = modal.querySelector('.scroll-paper');
-    const done = () => { modal.hidden = true; paper.removeEventListener('transitionend', done); };
+    const done = () => {
+      paper.removeEventListener('transitionend', done);
+      if (gen !== myGen) return;      // 閉じている途中で再度開かれたら何もしない
+      modal.hidden = true;
+    };
     paper.addEventListener('transitionend', done);
-    setTimeout(done, 900); // 保険
+    setTimeout(done, 950); // 保険
   }
 
   /* ---------- フェーズ切替（投票期間中） ---------- */

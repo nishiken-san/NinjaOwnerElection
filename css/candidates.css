@@ -56,6 +56,7 @@ body.scroll-lock{overflow:hidden}
   background:rgba(4,6,12,.72);backdrop-filter:blur(6px);
   opacity:0;transition:opacity .35s ease;
 }
+.scroll-modal[hidden]{display:none} /* 閉じた後に透明な板が残ってクリックを奪わないように */
 .scroll-modal.open{opacity:1}
 .scroll-stage{
   --paper-w:min(820px,calc(100vw - 96px));
@@ -83,24 +84,33 @@ body.scroll-lock{overflow:hidden}
   overflow-y:auto;overscroll-behavior:contain;
 }
 .scroll-modal.open .scroll-paper{width:var(--paper-w)}
-.scroll-paper::before{filter:none} /* 横開きの縁は直線でOK（毛羽立ちは不要） */
-/* 中身は最初から最終幅で固定（開く途中に文字が折り返し直さない） */
+/* 紙本体＝scroll-inner（全文の高さ分だけ背景が伸びる）。横開きの縁は直線でOK */
 .scroll-inner{
-  width:var(--paper-w);
-  padding:2.4rem clamp(1.4rem,4vw,3rem) 2.4rem;
+  width:var(--paper-w);min-height:100%;
 }
+.scroll-inner::before{filter:none}
+.scroll-body{
+  padding:0 clamp(1.4rem,4vw,3rem) 2.4rem;
+}
+/* ヘッダー：スクロールしても常に表示（アイコン・名前・閉じる） */
+.scroll-head{
+  position:sticky;top:0;z-index:4;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  margin:0 calc(-1 * clamp(1.4rem,4vw,3rem)) 1.4rem;
+  padding:1.1rem clamp(1.4rem,4vw,3rem) .9rem;
+  background:linear-gradient(180deg,#f3ecd9 0%,#eee4cc 100%);
+  border-bottom:2px solid rgba(34,28,22,.55);
+  box-shadow:0 6px 14px -8px rgba(0,0,0,.35);
+}
+.scroll-head-main{display:flex;align-items:center;gap:1rem;min-width:0}
 .scroll-close{
-  position:absolute;top:.6rem;right:.8rem;z-index:5;
+  flex:0 0 auto;
   width:36px;height:36px;border:1.5px solid var(--sumi);border-radius:50%;
   background:transparent;color:var(--sumi);font-size:1.3rem;line-height:1;cursor:pointer;
 }
 .scroll-close:hover{background:var(--sumi);color:var(--washi)}
-.scroll-head{
-  display:flex;align-items:center;gap:1rem;
-  border-bottom:2px solid rgba(34,28,22,.55);padding-bottom:1rem;margin-bottom:1.4rem;
-}
 .scroll-icon{
-  width:64px;height:64px;border-radius:50%;object-fit:cover;flex:0 0 auto;
+  width:56px;height:56px;border-radius:50%;object-fit:cover;flex:0 0 auto;
   border:2.5px solid var(--shu);box-shadow:0 4px 10px rgba(0,0,0,.35);
 }
 .scroll-name{
